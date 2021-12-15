@@ -1,3 +1,4 @@
+/* initialize */
 const display = document.querySelector('.display'),
     clrBtn = document.querySelector('.clear'),
     addBtn = document.querySelector('.add'),
@@ -23,6 +24,7 @@ let solution = '0',
     operator = '';
 
 
+/* functions */
 function populateDisplay() {
     display.textContent = solution;
 }
@@ -46,13 +48,20 @@ function operatorPressed() {
     if (num1 === '') {
         num1 = '0';
     }
-    if (operator === '' || operator === 'equals') {
+    if (operator === '' || operator === 'equals' || num2 === '') {
         operator = this.classList[0];
     } else {
-        solution = operate(parseInt(num1), parseInt(num2));
-        operator = this.classList[0];
-        num1 = solution;
-        num2 = '';
+        if (num2 === '0' && operator === 'divide') {
+            solution = 'Do not divide numbers by 0.';
+            num1 = '';
+            num2 = '';
+            operator = '';
+        } else {
+            solution = operate(parseInt(num1), parseInt(num2));
+            operator = this.classList[0];
+            num1 = solution;
+            num2 = '';
+        }
     }
     populateDisplay();
 }
@@ -60,11 +69,19 @@ function operatorPressed() {
 function equalsPressed() {
     if (operator === '' || num2 === '') {
         solution = 'error!';
+        num1 = '';
     } else {
-        solution = operate(parseInt(num1), parseInt(num2));
-        operator = this.classList[0];
-        num1 = solution;
-        num2 = '';
+        if (num2 === '0' && operator === 'divide') {
+            solution = 'Do not divide numbers by 0.';
+            num1 = '';
+            num2 = '';
+            operator = '';
+        } else {
+            solution = operate(parseInt(num1), parseInt(num2));
+            operator = this.classList[0];
+            num1 = solution;
+            num2 = '';
+        }
     }
     populateDisplay();
 }
@@ -107,6 +124,7 @@ function operate(a, b) {
 }
 
 
+/* events */
 clrBtn.addEventListener('click', clearPressed);
 addBtn.addEventListener('click', operatorPressed);
 subBtn.addEventListener('click', operatorPressed);
