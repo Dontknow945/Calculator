@@ -1,0 +1,46 @@
+.container {
+    background-color: rgb(214, 214, 214);
+    border: 2px black solid;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 60px auto;
+    width: 380px;
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: 90px repeat(5, 70px);
+    column-gap: 20px;
+    row-gap: 20px;
+    justify-content: center;
+}
+
+.display {
+    background-color: rgb(154, 182, 153);
+    font-size: 40px;
+    margin: 0;
+    border: 2px black solid;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: right;
+    line-height: 68px;
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+.clear {
+    background-color: rgb(219, 78, 78);
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+button {
+    font-size: 20px;
+    background-color: rgb(78, 78, 78);
+    color: white;
+    border: 2px black solid;
+    border-radius: 5px;
+}
+
+.operator {
+    background-color: rgb(145, 143, 143);
+}
