@@ -42,6 +42,9 @@ function numberPressed() {
         solution = num2;
     }
     populateDisplay();
+    if (this.classList[0] === 'point') {
+        pointBtn.removeEventListener('click', numberPressed);
+    }
 }
 
 function operatorPressed() {
@@ -57,13 +60,14 @@ function operatorPressed() {
             num2 = '';
             operator = '';
         } else {
-            solution = operate(parseInt(num1), parseInt(num2));
+            solution = operate(parseNumber(num1), parseNumber(num2));
             operator = this.classList[0];
             num1 = solution;
             num2 = '';
         }
     }
     populateDisplay();
+    pointBtn.addEventListener('click', numberPressed);
 }
 
 function equalsPressed() {
@@ -77,13 +81,14 @@ function equalsPressed() {
             num2 = '';
             operator = '';
         } else {
-            solution = operate(parseInt(num1), parseInt(num2));
+            solution = operate(parseNumber(num1), parseNumber(num2));
             operator = this.classList[0];
             num1 = solution;
             num2 = '';
         }
     }
     populateDisplay();
+    pointBtn.addEventListener('click', numberPressed);
 }
 
 function clearPressed() {
@@ -94,20 +99,28 @@ function clearPressed() {
     populateDisplay();
 }
 
+function parseNumber(num) {
+    if (num.indexOf('.') !== -1) {
+        return parseFloat(num);
+    } else {
+        return parseInt(num);
+    }
+}
+
 function add(a, b) {
-    return a + b;
+    return String(Math.round((a + b)*10000)/10000);
 }
 
 function subtract(a, b) {
-    return a - b;
+    return String((Math.round((a - b)*10000)/10000).toFixed(4));
 }
 
 function multiply(a, b) {
-    return a * b;
+    return String(Math.round((a * b)*10000)/10000);
 }
 
 function divide(a, b) {
-    return Math.round((a / b)*10000)/10000;
+    return String(Math.round((a / b)*10000)/10000);
 }
 
 function operate(a, b) {
@@ -131,7 +144,7 @@ subBtn.addEventListener('click', operatorPressed);
 mulBtn.addEventListener('click', operatorPressed);
 divBtn.addEventListener('click', operatorPressed);
 equBtn.addEventListener('click', equalsPressed);
-//pointBtn.addEventListener('click', numberPressed);
+pointBtn.addEventListener('click', numberPressed);
 zeroBtn.addEventListener('click', numberPressed);
 oneBtn.addEventListener('click', numberPressed);
 twoBtn.addEventListener('click', numberPressed);
