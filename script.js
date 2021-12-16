@@ -1,6 +1,7 @@
 /* initialize */
 const display = document.querySelector('.display'),
     clrBtn = document.querySelector('.clear'),
+    backBtn = document.querySelector('.back'),
     addBtn = document.querySelector('.add'),
     subBtn = document.querySelector('.subtract'),
     mulBtn = document.querySelector('.multiply'),
@@ -53,6 +54,7 @@ function operatorPressed() {
     }
     if (operator === '' || operator === 'equals' || num2 === '') {
         operator = this.classList[0];
+        solution += this.textContent;
     } else {
         if (num2 === '0' && operator === 'divide') {
             solution = 'Do not divide numbers by 0.';
@@ -63,6 +65,7 @@ function operatorPressed() {
             solution = operate(parseNumber(num1), parseNumber(num2));
             operator = this.classList[0];
             num1 = solution;
+            solution += this.textContent;
             num2 = '';
         }
     }
@@ -97,6 +100,31 @@ function clearPressed() {
     num2 = '';
     operator = '';
     populateDisplay();
+    pointBtn.addEventListener('click', numberPressed);
+}
+
+function backPressed() {
+    if (num2 !== '') {
+        if (num2.charAt(num2.length-1) === '.') {
+            pointBtn.addEventListener('click', numberPressed);
+        }
+        num2 = num2.slice(0, num2.length-1);
+        solution = num2;
+    } else if (operator !== '') {
+        operator = '';
+        solution = solution.slice(0, solution.length-1);
+    } else if (num1 !== '') {
+        if (num1.charAt(num1.length-1) === '.') {
+            pointBtn.addEventListener('click', numberPressed);
+        }
+        num1 = num1.slice(0, num1.length-1);
+        solution = num1;
+    }
+
+    if (solution === '') {
+        solution = '0';
+    }
+    populateDisplay();
 }
 
 function parseNumber(num) {
@@ -112,7 +140,11 @@ function add(a, b) {
 }
 
 function subtract(a, b) {
-    return String((Math.round((a - b)*10000)/10000).toFixed(4));
+    let result = Math.round((a - b)*10000)/10000;
+    if (!Number.isInteger(result)) {
+        result.toFixed(4);
+    }
+    return String(result);
 }
 
 function multiply(a, b) {
@@ -139,6 +171,7 @@ function operate(a, b) {
 
 /* events */
 clrBtn.addEventListener('click', clearPressed);
+backBtn.addEventListener('click', backPressed);
 addBtn.addEventListener('click', operatorPressed);
 subBtn.addEventListener('click', operatorPressed);
 mulBtn.addEventListener('click', operatorPressed);
