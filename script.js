@@ -22,7 +22,8 @@ const display = document.querySelector('.display'),
 let solution = '0',
     num1 = '', 
     num2 = '',
-    operator = '';
+    operator = '',
+    pointKey = false;
 
 
 /* functions */
@@ -30,31 +31,35 @@ function populateDisplay() {
     display.textContent = solution;
 }
 
-function numberPressed() {
+function numberPressed(element) {
+    if (element.classList[0] === 'point') {
+        if (pointKey === true) {
+            return;
+        }
+        pointKey = true;
+    }
+
     if (operator === '') {
-        num1 += this.id;
+        num1 += element.textContent;
         solution = num1;
     } else if (operator === 'equals') {
-        num1 = this.id;
+        num1 = element.textContent;
         solution = num1;
         operator = '';
     } else {
-        num2 += this.id;
+        num2 += element.textContent;
         solution = num2;
     }
     populateDisplay();
-    if (this.classList[0] === 'point') {
-        pointBtn.removeEventListener('click', numberPressed);
-    }
 }
 
-function operatorPressed() {
+function operatorPressed(element) {
     if (num1 === '') {
         num1 = '0';
     }
     if (operator === '' || operator === 'equals' || num2 === '') {
-        operator = this.classList[0];
-        solution += this.textContent;
+        operator = element.classList[0];
+        solution += element.textContent;
     } else {
         if (num2 === '0' && operator === 'divide') {
             solution = 'Do not divide numbers by 0.';
@@ -63,17 +68,17 @@ function operatorPressed() {
             operator = '';
         } else {
             solution = operate(parseNumber(num1), parseNumber(num2));
-            operator = this.classList[0];
+            operator = element.classList[0];
             num1 = solution;
-            solution += this.textContent;
+            solution += element.textContent;
             num2 = '';
         }
     }
     populateDisplay();
-    pointBtn.addEventListener('click', numberPressed);
+    pointKey = false;
 }
 
-function equalsPressed() {
+function equalsPressed(element) {
     if (operator === '' || num2 === '') {
         solution = 'error!';
         num1 = '';
@@ -85,13 +90,13 @@ function equalsPressed() {
             operator = '';
         } else {
             solution = operate(parseNumber(num1), parseNumber(num2));
-            operator = this.classList[0];
+            operator = element.classList[0];
             num1 = solution;
             num2 = '';
         }
     }
     populateDisplay();
-    pointBtn.addEventListener('click', numberPressed);
+    pointKey = false;
 }
 
 function clearPressed() {
@@ -100,13 +105,13 @@ function clearPressed() {
     num2 = '';
     operator = '';
     populateDisplay();
-    pointBtn.addEventListener('click', numberPressed);
+    pointKey = false;
 }
 
 function backPressed() {
     if (num2 !== '') {
         if (num2.charAt(num2.length-1) === '.') {
-            pointBtn.addEventListener('click', numberPressed);
+            pointKey = false;
         }
         num2 = num2.slice(0, num2.length-1);
         solution = num2;
@@ -115,7 +120,7 @@ function backPressed() {
         solution = solution.slice(0, solution.length-1);
     } else if (num1 !== '') {
         if (num1.charAt(num1.length-1) === '.') {
-            pointBtn.addEventListener('click', numberPressed);
+            pointKey = false;
         }
         num1 = num1.slice(0, num1.length-1);
         solution = num1;
@@ -168,23 +173,57 @@ function operate(a, b) {
     }
 }
 
+function buttonPressed() {
+    if (this.textContent.match(/[0-9.]/)) {
+        numberPressed(this);
+    } else if (this.textContent.match(/[\+\-\*\/]/)) {
+        operatorPressed(this);
+    } else if (this.textContent === '=') {
+        equalsPressed(this);
+    } else if (this.classList[0] === 'clear') {
+        clearPressed();
+    } else if (this.classList[0] === 'back') {
+        backPressed();
+    }
+}
+
+function keyPressed(e) {
+    let keyElement = document.querySelector(`button[data-digit="${e.keyCode}"]`);
+    if (!keyElement) {
+        keyElement = document.querySelector(`button[data-numpad="${e.keyCode}"]`);
+    }
+    
+    if (keyElement.textContent.match(/[0-9.]/)) {
+        numberPressed(keyElement);
+    } else if (keyElement.textContent.match(/[\+\-\*\/]/)) {
+        operatorPressed(keyElement);
+    } else if (keyElement.textContent === '=') {
+        equalsPressed(keyElement);
+    } else if (keyElement.classList[0] === 'clear') {
+        clearPressed();
+    } else if (keyElement.classList[0] === 'back') {
+        backPressed();
+    }
+}
+
 
 /* events */
-clrBtn.addEventListener('click', clearPressed);
-backBtn.addEventListener('click', backPressed);
-addBtn.addEventListener('click', operatorPressed);
-subBtn.addEventListener('click', operatorPressed);
-mulBtn.addEventListener('click', operatorPressed);
-divBtn.addEventListener('click', operatorPressed);
-equBtn.addEventListener('click', equalsPressed);
-pointBtn.addEventListener('click', numberPressed);
-zeroBtn.addEventListener('click', numberPressed);
-oneBtn.addEventListener('click', numberPressed);
-twoBtn.addEventListener('click', numberPressed);
-threeBtn.addEventListener('click', numberPressed);
-fourBtn.addEventListener('click', numberPressed);
-fiveBtn.addEventListener('click', numberPressed);
-sixBtn.addEventListener('click', numberPressed);
-sevenBtn.addEventListener('click', numberPressed);
-eightBtn.addEventListener('click', numberPressed);
-nineBtn.addEventListener('click', numberPressed);
+clrBtn.addEventListener('click', buttonPressed);
+backBtn.addEventListener('click', buttonPressed);
+addBtn.addEventListener('click', buttonPressed);
+subBtn.addEventListener('click', buttonPressed);
+mulBtn.addEventListener('click', buttonPressed);
+divBtn.addEventListener('click', buttonPressed);
+equBtn.addEventListener('click', buttonPressed);
+pointBtn.addEventListener('click', buttonPressed);
+zeroBtn.addEventListener('click', buttonPressed);
+oneBtn.addEventListener('click', buttonPressed);
+twoBtn.addEventListener('click', buttonPressed);
+threeBtn.addEventListener('click', buttonPressed);
+fourBtn.addEventListener('click', buttonPressed);
+fiveBtn.addEventListener('click', buttonPressed);
+sixBtn.addEventListener('click', buttonPressed);
+sevenBtn.addEventListener('click', buttonPressed);
+eightBtn.addEventListener('click', buttonPressed);
+nineBtn.addEventListener('click', buttonPressed);
+window.addEventListener('keydown', keyPressed);

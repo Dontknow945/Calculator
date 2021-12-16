@@ -26,6 +26,7 @@
     line-height: 68px;
     grid-column-start: 1;
     grid-column-end: 5;
+    overflow: hidden;
 }
 
 button {
